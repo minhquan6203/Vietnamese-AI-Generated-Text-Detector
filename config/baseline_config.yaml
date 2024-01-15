@@ -1,0 +1,53 @@
+data:
+  dataset_folder: data
+  train_dataset: train.csv
+  val_dataset: dev.csv
+  test_dataset: test.csv
+
+tokenizer:
+  padding: max_length
+  max_length: 256
+  truncation: True
+  return_attention_mask: True
+
+text_embedding:
+  type: pretrained #usual or pretrained
+  text_encoder: vinai/phobert-base
+  freeze: True
+  d_features: 768
+  d_model: 512
+  dropout: 0.2
+
+attention:
+  heads: 8
+  d_model: 512
+  d_key: 64
+  d_value: 64
+  d_ff: 2048
+  d_feature: 2048
+  dropout: 0.2
+
+encoder:
+  d_model: 512
+  layers: 3
+
+model:
+  type_model: trans_uni
+  intermediate_dims: 512
+  dropout: 0.2
+
+train:
+  output_dir: checkpoint
+  seed: 12345
+  num_train_epochs: 10
+  patience: 3
+  learning_rate: 1.0e-4
+  weight_decay: 0.
+  metric_for_best_model: auc
+  per_device_train_batch_size: 128
+  per_device_valid_batch_size: 128
+
+inference:
+  test_dataset: data/test.csv
+  batch_size: 128
+
