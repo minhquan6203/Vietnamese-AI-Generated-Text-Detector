@@ -5,12 +5,13 @@ import os
 import pandas as pd
 from tqdm import tqdm
 from eval_metric.evaluate import ScoreCalculator
+from model.build_model import build_model
 
 class Predict:
     def __init__(self, config: Dict):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.checkpoint_path=os.path.join(config["train"]["output_dir"], "best_model.pth")
-        self.model = Trans_Model(config)
+        self.model = build_model(config)
         self.dataloader = Get_Loader(config)
     def predict_submission(self):
         # Load the model
