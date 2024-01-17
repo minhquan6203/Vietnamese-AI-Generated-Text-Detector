@@ -9,11 +9,12 @@ tokenizer:
   max_length: 256
   truncation: True
   return_attention_mask: True
+  return_token_type_ids: True
 
 text_embedding:
   type: pretrained #usual or pretrained
   text_encoder: vinai/phobert-base
-  freeze: True
+  freeze: False
   d_features: 768
   d_model: 512
   dropout: 0.2
@@ -32,7 +33,7 @@ encoder:
   layers: 3
 
 model:
-  type_model: trans_uni
+  type_model: baseline
   intermediate_dims: 512
   dropout: 0.2
 
@@ -44,8 +45,8 @@ train:
   learning_rate: 1.0e-4
   weight_decay: 0.
   metric_for_best_model: auc
-  per_device_train_batch_size: 128
-  per_device_valid_batch_size: 128
+  per_device_train_batch_size: 8
+  per_device_valid_batch_size: 8
 
 inference:
   test_dataset: data/test.csv
