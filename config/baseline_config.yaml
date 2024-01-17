@@ -45,8 +45,8 @@ train:
   learning_rate: 1.0e-4
   weight_decay: 0.
   metric_for_best_model: auc
-  per_device_train_batch_size: 8
-  per_device_valid_batch_size: 8
+  per_device_train_batch_size: 64
+  per_device_valid_batch_size: 64
 
 inference:
   test_dataset: data/test.csv
