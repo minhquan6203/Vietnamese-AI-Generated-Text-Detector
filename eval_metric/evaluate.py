@@ -9,7 +9,7 @@ class ScoreCalculator:
     def f1(self, labels, preds) -> float:
         preds = preds.cpu().numpy()
         labels = labels.cpu().numpy()
-        return f1_score(labels, preds, average='macro')
+        return f1_score(labels, preds, average='binary')
     
     def auc(self, labels, logits) -> float:
         logits = logits.cpu().numpy()
