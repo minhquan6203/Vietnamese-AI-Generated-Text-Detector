@@ -49,6 +49,7 @@ train:
   per_device_valid_batch_size: 64
 
 inference:
+  with_label: True
   test_dataset: data/test.csv
   batch_size: 128
 

@@ -5,9 +5,9 @@ import os
 from data_utils.utils import preprocess_text
 
 class CustomDataset(Dataset):
-    def __init__(self, data, with_labels=True):
+    def __init__(self, data, with_label=True):
         self.data = data  # pandas dataframe
-        self.with_labels = with_labels
+        self.with_label = with_label
 
     def __len__(self):
         return len(self.data)
@@ -15,7 +15,7 @@ class CustomDataset(Dataset):
     def __getitem__(self, index):
         idx=self.data.loc[index, 'id']
         sent = preprocess_text(str(self.data.loc[index, 'text']))
-        if self.with_labels:  # True if the dataset has labels
+        if self.with_label:  # True if the dataset has labels
             labels = self.data.loc[index, 'label']
             return sent, labels, idx
         else:
@@ -31,6 +31,7 @@ class Get_Loader:
 
         self.test_path=os.path.join(config['inference']['test_dataset'])
         self.test_batch=config['inference']['batch_size']
+        self.with_label = config['inference']['with_label']
 
     def load_train_dev(self):
         train_df=pd.read_csv(self.train_path)
@@ -47,6 +48,6 @@ class Get_Loader:
     def load_test(self):
         test_df=pd.read_csv(self.test_path)
         print("Reading testing data...")
-        test_set = CustomDataset(test_df,with_labels=False)
+        test_set = CustomDataset(test_df,with_label=self.with_label)
         test_loader = DataLoader(test_set, batch_size=self.test_batch, num_workers=2, shuffle=False)
         return test_loader

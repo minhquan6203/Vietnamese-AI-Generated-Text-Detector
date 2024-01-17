@@ -13,6 +13,7 @@ class Predict:
         self.checkpoint_path=os.path.join(config["train"]["output_dir"], "best_model.pth")
         self.model = build_model(config)
         self.dataloader = Get_Loader(config)
+        self.compute_score = ScoreCalculator()
     def predict_submission(self):
         # Load the model
         print("Loading the best model...")
@@ -24,18 +25,26 @@ class Predict:
         print("Obtaining predictions...")
         test =self.dataloader.load_test()
         submits=[]
+        gts=[]
+        predicts=[]
         ids=[]
         self.model.eval()
         with torch.no_grad():
-            for it, (sents, id) in enumerate(tqdm(test)):
+            for it, (sents, labels,id) in enumerate(tqdm(test)):
                 with torch.autocast(device_type='cuda', dtype=torch.float32, enabled=True):
                     logits = self.model(sents)
+                    preds = torch.round(logits)
                 submits.extend(logits.cpu().numpy())
+                gts.extend(labels.cpu().numpy())
+                predicts.extend(preds.cpu().numpy())
                 if isinstance(id, torch.Tensor):
                     ids.extend(id.tolist())
                 else:
                     ids.extend(id)
-                    
-        data = {'id': ids,'generated': submits}
+        test_acc=self.compute_score.acc(labels,preds)
+        test_f1=self.compute_score.f1(labels,preds)  
+        test_auc=self.compute_score.auc(labels,logits)      
+        print(f"test acc: {test_acc:.4f} test f1: {test_f1:.4f} test auc: {test_auc:.4f}")             
+        data = {'id': ids,'generated': submits,'predicts':predicts}
         df = pd.DataFrame(data)
         df.to_csv('./submission.csv', index=False)

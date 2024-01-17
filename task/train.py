@@ -75,10 +75,10 @@ class LLM_Detec_Gen_Task:
                         preds = torch.round(logits)
                     valid_acc+=self.compute_score.acc(labels,preds)
                     valid_f1+=self.compute_score.f1(labels,preds)
-                    valid_auc+=self.compute_score.auc(labels,logits)
+                    # valid_auc+=self.compute_score.auc(labels,logits)
             valid_acc /= len(valid)
             valid_f1 /= len(valid)
-            valid_auc /= len(valid)
+            # valid_auc /= len(valid)
 
             print(f"epoch {epoch + 1}/{self.num_epochs + initial_epoch}")
             print(f"train loss: {train_loss:.4f}")
