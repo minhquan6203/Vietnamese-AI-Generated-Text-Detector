@@ -41,9 +41,9 @@ class Predict:
                     ids.extend(id.tolist())
                 else:
                     ids.extend(id)
-        test_acc=self.compute_score.acc(labels,preds)
-        test_f1=self.compute_score.f1(labels,preds)  
-        test_auc=self.compute_score.auc(labels,logits)      
+        test_acc=self.compute_score.acc(gts,predicts)
+        test_f1=self.compute_score.f1(gts,predicts)  
+        test_auc=self.compute_score.auc(gts,predicts)      
         print(f"test acc: {test_acc:.4f} test f1: {test_f1:.4f} test auc: {test_auc:.4f}")             
         data = {'id': ids,'generated': submits,'predicts':predicts}
         df = pd.DataFrame(data)
