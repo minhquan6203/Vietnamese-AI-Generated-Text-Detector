@@ -37,7 +37,8 @@ class Pretrained_Embedding(nn.Module):
         ).to(self.device)
         if 't5' in self.pretrained_name:
             features = self.embedding.encoder(**inputs).last_hidden_state
-        features = self.embedding(**inputs).last_hidden_state
+        else:
+            features = self.embedding(**inputs).last_hidden_state
 
         padding_mask = generate_padding_mask(inputs.input_ids, padding_idx=self.tokenizer.pad_token_id)
         out = self.proj(features)
