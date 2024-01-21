@@ -19,19 +19,6 @@ text_embedding:
   d_model: 512
   dropout: 0.2
 
-attention:
-  heads: 8
-  d_model: 512
-  d_key: 64
-  d_value: 64
-  d_ff: 2048
-  d_feature: 2048
-  dropout: 0.2
-
-encoder:
-  d_model: 512
-  layers: 3
-
 model:
   type_model: baseline
   intermediate_dims: 512
@@ -44,9 +31,9 @@ train:
   patience: 3
   learning_rate: 1.0e-4
   weight_decay: 0.
-  metric_for_best_model: auc
-  per_device_train_batch_size: 64
-  per_device_valid_batch_size: 64
+  metric_for_best_model: f1
+  per_device_train_batch_size: 8
+  per_device_valid_batch_size: 8
 
 inference:
   with_label: True

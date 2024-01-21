@@ -8,8 +8,9 @@ from text_module.utils import generate_padding_mask
 class Pretrained_Embedding(nn.Module):
     def __init__(self, config: Dict):
         super(Pretrained_Embedding,self).__init__()
-        self.tokenizer = AutoTokenizer.from_pretrained(config["text_embedding"]["text_encoder"])
-        self.embedding = AutoModel.from_pretrained(config["text_embedding"]["text_encoder"])
+        self.pretrained_name=config["text_embedding"]["text_encoder"]
+        self.tokenizer = AutoTokenizer.from_pretrained(self.pretrained_name)
+        self.embedding = AutoModel.from_pretrained(self.pretrained_name)
         self.freeze = config['text_embedding']['freeze']
         # freeze all parameters of pretrained model
         if self.freeze:
@@ -23,7 +24,6 @@ class Pretrained_Embedding(nn.Module):
         self.padding = config["tokenizer"]["padding"]
         self.max_length = config["tokenizer"]["max_length"]
         self.truncation = config["tokenizer"]["truncation"]
-        self.return_token_type_ids = config["tokenizer"]["return_token_type_ids"],
         self.return_attention_mask = config["tokenizer"]["return_attention_mask"],
 
     def forward(self, text: List[str]):
@@ -33,9 +33,10 @@ class Pretrained_Embedding(nn.Module):
             max_length = self.max_length,
             truncation = self.truncation,
             return_tensors = 'pt',
-            return_token_type_ids = self.return_token_type_ids,
             return_attention_mask = self.return_attention_mask,
         ).to(self.device)
+        if 't5' in self.pretrained_name:
+            features = self.embedding.encoder(**inputs).last_hidden_state
         features = self.embedding(**inputs).last_hidden_state
 
         padding_mask = generate_padding_mask(inputs.input_ids, padding_idx=self.tokenizer.pad_token_id)

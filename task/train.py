@@ -55,7 +55,6 @@ class LLM_Detec_Gen_Task:
         for epoch in range(initial_epoch, self.num_epochs + initial_epoch):
             valid_acc = 0.
             valid_f1 = 0.
-            valid_auc= 0.
             train_loss = 0.
             for it, (sents, labels, id) in enumerate(tqdm(train)):
                 with torch.autocast(device_type='cuda', dtype=torch.float32, enabled=True):
@@ -75,26 +74,23 @@ class LLM_Detec_Gen_Task:
                         preds = torch.round(logits)
                     valid_acc+=self.compute_score.acc(labels,preds)
                     valid_f1+=self.compute_score.f1(labels,preds)
-                    # valid_auc+=self.compute_score.auc(labels,logits)
             valid_acc /= len(valid)
             valid_f1 /= len(valid)
             # valid_auc /= len(valid)
 
             print(f"epoch {epoch + 1}/{self.num_epochs + initial_epoch}")
             print(f"train loss: {train_loss:.4f}")
-            print(f"valid acc: {valid_acc:.4f} valid f1: {valid_f1:.4f} valid auc: {valid_auc:.4f}")
+            print(f"valid acc: {valid_acc:.4f} valid f1: {valid_f1:.4f}")
 
             with open('log.txt', 'a') as file:
                 file.write(f"epoch {epoch + 1}/{self.num_epochs + initial_epoch}\n")
                 file.write(f"train loss: {train_loss:.4f}\n")
-                file.write(f"valid acc: {valid_acc:.4f} valid f1: {valid_f1:.4f} valid auc: {valid_auc:.4f}\n")
+                file.write(f"valid acc: {valid_acc:.4f} valid f1: {valid_f1:.4f}\n")
 
             if self.best_metric =='accuracy':
                 score=valid_acc
             if self.best_metric=='f1':
                 score=valid_f1
-            if self.best_metric=='auc':
-                score=valid_auc
             # save the last model
             torch.save({
                 'epoch': epoch,
