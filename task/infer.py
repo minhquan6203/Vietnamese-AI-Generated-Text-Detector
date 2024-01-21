@@ -3,6 +3,7 @@ from data_utils.load_data import Get_Loader
 import torch
 import os
 import pandas as pd
+import numpy as np
 from tqdm import tqdm
 from eval_metric.evaluate import ScoreCalculator
 from model.build_model import build_model
@@ -41,6 +42,8 @@ class Predict:
                     ids.extend(id.tolist())
                 else:
                     ids.extend(id)
+        gts=torch.tensor(gts)
+        predicts=torch.tensor(predicts)
         test_acc=self.compute_score.acc(gts,predicts)
         test_f1=self.compute_score.f1(gts,predicts)  
         test_auc=self.compute_score.auc(gts,predicts)      
